@@ -1,6 +1,5 @@
 import { exigerRole } from "@/lib/auth";
 import { creerClientServeur } from "@/lib/supabase/server";
-import { EnteteEtablissement } from "@/components/entete-etablissement";
 import { publierEvaluation, creerClasse } from "./actions";
 import { FormulaireCreerClasse } from "./formulaire-creer-classe";
 
@@ -10,13 +9,7 @@ export default async function PageDirection({
   params: Promise<{ etablissementId: string }>;
 }) {
   const { etablissementId } = await params;
-  const { profil, appartenances } = await exigerRole(
-    etablissementId,
-    "direction"
-  );
-  const etablissement = appartenances.find(
-    (a) => a.etablissement.id === etablissementId
-  )!.etablissement;
+  await exigerRole(etablissementId, "direction");
 
   const supabase = await creerClientServeur();
 
@@ -71,15 +64,7 @@ export default async function PageDirection({
   ]);
 
   return (
-    <div className="min-h-screen bg-fond">
-      <EnteteEtablissement
-        nomEtablissement={etablissement.nom}
-        demo={etablissement.demo}
-        role="direction"
-        nomUtilisateur={profil?.nom_complet ?? ""}
-      />
-
-      <main className="mx-auto max-w-5xl px-6 py-8">
+    <main className="mx-auto max-w-5xl px-6 py-8">
         <h1 className="text-2xl font-semibold text-texte">
           Vue d&apos;ensemble
         </h1>
@@ -223,8 +208,7 @@ export default async function PageDirection({
             </div>
           </div>
         </section>
-      </main>
-    </div>
+    </main>
   );
 }
 
